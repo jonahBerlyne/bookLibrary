@@ -1,0 +1,39 @@
+.button {
+ cursor: pointer;
+}
+
+#popUp {
+ display: none;
+}
+
+.form {
+ border: 1px solid black;
+ padding: 5px;
+}
+
+.form-header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+}
+
+.close {
+ display: flex; 
+ justify-content: flex-end;
+}
+
+.close:hover {
+ color: red;
+ cursor: pointer;
+}
+
+.books {
+ border: 1px solid black;
+ padding: 5px;
+}
+
+.book-list {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 5px;
+}
