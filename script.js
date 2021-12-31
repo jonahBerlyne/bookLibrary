@@ -20,21 +20,24 @@ class Book {
   } 
 }
 
+let theIndex = null;
+
 function addBook() {
   const book = new Book (
     document.getElementById('title').value,
     document.getElementById('author').value,
-    document.getElementById('pages').value 
+    document.getElementById('pages').value
   );
   myLibrary.push(book);
 }
 
 function showBook(){
- myLibrary.forEach(function(item, index){
-   let bookIndex = myLibrary.length - 1;
-   if (index == bookIndex) {
+ myLibrary.map((item, index) => {
+   console.log(typeof item);
+    theIndex = `${index}`;
+
     let card = document.createElement("div");
-    card.setAttribute("id", "card");
+    card.setAttribute("id", `${index}`);
     card.className = "card";
 
     let theTitle = document.createElement("div");
@@ -47,13 +50,11 @@ function showBook(){
     thePages.textContent += (`Pages: ${item.pages}`);
 
     const remove_btn = document.createElement("button");
-    remove_btn.setAttribute('data-attribute', bookIndex);
     remove_btn.className = "button";
     remove_btn.textContent = "X";
     remove_btn.addEventListener('click', removeBook);
 
     const read_btn = document.createElement("button");
-    read_btn.setAttribute('data-attribute', bookIndex);
     read_btn.className = "button";
     read_btn.textContent = "Not Read";
     read_btn.addEventListener('click', readIt);
@@ -65,7 +66,6 @@ function showBook(){
     card.appendChild(read_btn);
 
     book_list.appendChild(card);
-   }
  });
 }
 
@@ -77,7 +77,6 @@ function removeBook(e) {
 function readIt(e) {
   if (e.target.textContent == "Not Read") {
     e.target.textContent = "Read";
-    setData();
   } else e.target.textContent = "Not Read";
 }
 
@@ -85,6 +84,7 @@ function submitBook() {
   if (titleInput.value.length !== 0 && authorInput.value.length !== 0 && pagesInput.value >= 1) {
     addBook();
     showBook();
+    setData(titleInput.value, authorInput.value, pagesInput.value);
     document.querySelector('form').reset();
   }
 }
@@ -96,16 +96,39 @@ document.addEventListener('DOMContentLoaded', ()=> {
   });
 });
 
-function setData() {
-  localStorage.setItem(`myLibrary`, JSON.stringify(myLibrary));
+function setData(bookTitle, bookAuthor, bookPages) {
+  let book = localStorage.getItem(`${theIndex}`);
+  book = book ? JSON.parse(book) : {};
+  const theTitle = "title";
+  book[theTitle] = bookTitle;
+  const theAuthor = "author";
+  book[theAuthor] = bookAuthor;
+  const thePages = "pages";
+  book[thePages] = bookPages;
+  localStorage.setItem(theIndex, JSON.stringify(book));
+  theIndex = null;
 }
 
+// function SortLocalStorage(){
+//    if(localStorage.length > 0){
+//       var localStorageArray = new Array();
+//       for (let i=0;i<localStorage.length;i++){
+//           localStorageArray[i] = localStorage.key(i)+localStorage.getItem(localStorage.key(i));
+//       }
+//    }
+//    console.log(localStorageArray);
+//    var sortedArray = localStorageArray.sort();
+//    return localStorageArray;
+// }
+
 function restore() {
-  if (localStorage.myLibrary) {
-    let books = localStorage.getItem('myLibrary')
-    books = JSON.parse(books);
-    myLibrary = books;
+  let keys = Object.keys(localStorage);
+  for (let i = 0; i < keys.length; i++) {
+    console.log(keys[i]);
+    myLibrary.push(JSON.parse(localStorage.getItem(keys[i])));
   }
+  console.log(myLibrary);
+  showBook();
 }
 
 restore();
