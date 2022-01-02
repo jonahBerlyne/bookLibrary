@@ -67,9 +67,9 @@ function addBook() {
   
 function showBook() {
     book_list.innerHTML = '';
-    myLibrary.map((item, index) => {
+    myLibrary.map(item => {
       let card = document.createElement("div");
-      card.setAttribute("id", `${index}`);
+      card.setAttribute("id", `${item.key}`);
       card.className = "card";
       
       let theTitle = document.createElement("div");
@@ -119,6 +119,7 @@ function submitBook() {
     if (!bookAdded) return;
     setData(titleInput.value, authorInput.value, pagesInput.value);
     showBook();
+    theIndex = null;
     document.querySelector('form').reset();
     bookAdded = false;
   }
@@ -143,7 +144,6 @@ function setData(bookTitle, bookAuthor, bookPages) {
   const thePages = "pages";
   book[thePages] = bookPages;
   localStorage.setItem(theIndex, JSON.stringify(book));
-  theIndex = null;
 }
 
 function restore() {
@@ -152,19 +152,11 @@ function restore() {
     myLibrary.push(JSON.parse(localStorage.getItem(keys[i])));
   }
   myLibrary.sort((a, b) => {
-    if (a.title < b.title) { 
-      return -1; 
-    }
-    if (a.title > b.title) {
-      return 1;
-    }
+    if (a.title < b.title) return -1; 
+    if (a.title > b.title) return 1;
     if (a.title == b.title) {
-      if (a.author < b.author) {
-        return -1;
-      }
-      if (a.author > b.author) {
-        return 1;
-      }
+      if (a.author < b.author) return -1;
+      if (a.author > b.author) return 1;
     }
   });
   showBook();
