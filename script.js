@@ -21,57 +21,70 @@ class Book {
 }
 
 let theIndex = null;
+let found = false;
+let bookAdded = false;
 
 function addBook() {
   const book = new Book (
     document.getElementById('title').value,
     document.getElementById('author').value,
     document.getElementById('pages').value
-  );
-  myLibrary.push(book);
+    );
+    for (let i = 0; i < myLibrary.length; i++) {
+      if (myLibrary[i].title == book.title && myLibrary[i].author == book.author) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      found = false;
+      alert("Cannot add repeat books");
+      return;
+    }
+    myLibrary.push(book);
+    theIndex = myLibrary.indexOf(book);
+    bookAdded = true;
 }
+  
+function showBook() {
+    book_list.innerHTML = '';
+    myLibrary.map((item, index) => {
+      let card = document.createElement("div");
+      card.setAttribute("id", `${index}`);
+      card.className = "card";
+      
+      let theTitle = document.createElement("div");
+      theTitle.textContent += (`Title: ${item.title}`);
+      
+      let theAuthor = document.createElement("div");
+      theAuthor.textContent += (`Author: ${item.author}`);
+      
+      let thePages = document.createElement("div");
+      thePages.textContent += (`Pages: ${item.pages}`);
+      
+      const remove_btn = document.createElement("button");
+      remove_btn.className = "button";
+      remove_btn.textContent = "X";
+      remove_btn.addEventListener('click', removeBook);
+      
+      const read_btn = document.createElement("button");
+      read_btn.className = "button";
+      read_btn.textContent = "Not Read";
+      read_btn.addEventListener('click', readIt);
+      
+      card.appendChild(theTitle);
+      card.appendChild(theAuthor);
+      card.appendChild(thePages);
+      card.appendChild(remove_btn);
+      card.appendChild(read_btn);
 
-function showBook(){
- myLibrary.map((item, index) => {
-   console.log(typeof item);
-    theIndex = `${index}`;
-
-    let card = document.createElement("div");
-    card.setAttribute("id", `${index}`);
-    card.className = "card";
-
-    let theTitle = document.createElement("div");
-    theTitle.textContent += (`Title: ${item.title}`);
-
-    let theAuthor = document.createElement("div");
-    theAuthor.textContent += (`Author: ${item.author}`);
-
-    let thePages = document.createElement("div");
-    thePages.textContent += (`Pages: ${item.pages}`);
-
-    const remove_btn = document.createElement("button");
-    remove_btn.className = "button";
-    remove_btn.textContent = "X";
-    remove_btn.addEventListener('click', removeBook);
-
-    const read_btn = document.createElement("button");
-    read_btn.className = "button";
-    read_btn.textContent = "Not Read";
-    read_btn.addEventListener('click', readIt);
-
-    card.appendChild(theTitle);
-    card.appendChild(theAuthor);
-    card.appendChild(thePages);
-    card.appendChild(remove_btn);
-    card.appendChild(read_btn);
-
-    book_list.appendChild(card);
- });
+      book_list.appendChild(card);
+    });
 }
 
 function removeBook(e) {
   e.target.parentElement.remove();
-    myLibrary.splice(e.target, 1);
+  myLibrary.splice(e.target, 1);
 }
 
 function readIt(e) {
@@ -83,9 +96,11 @@ function readIt(e) {
 function submitBook() {
   if (titleInput.value.length !== 0 && authorInput.value.length !== 0 && pagesInput.value >= 1) {
     addBook();
-    showBook();
+    if (!bookAdded) return;
     setData(titleInput.value, authorInput.value, pagesInput.value);
+    showBook();
     document.querySelector('form').reset();
+    bookAdded = false;
   }
 }
 
@@ -99,6 +114,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
 function setData(bookTitle, bookAuthor, bookPages) {
   let book = localStorage.getItem(`${theIndex}`);
   book = book ? JSON.parse(book) : {};
+  const theKey = "key";
+  book[theKey] = theIndex;
   const theTitle = "title";
   book[theTitle] = bookTitle;
   const theAuthor = "author";
@@ -109,25 +126,12 @@ function setData(bookTitle, bookAuthor, bookPages) {
   theIndex = null;
 }
 
-// function SortLocalStorage(){
-//    if(localStorage.length > 0){
-//       var localStorageArray = new Array();
-//       for (let i=0;i<localStorage.length;i++){
-//           localStorageArray[i] = localStorage.key(i)+localStorage.getItem(localStorage.key(i));
-//       }
-//    }
-//    console.log(localStorageArray);
-//    var sortedArray = localStorageArray.sort();
-//    return localStorageArray;
-// }
-
 function restore() {
   let keys = Object.keys(localStorage);
   for (let i = 0; i < keys.length; i++) {
-    console.log(keys[i]);
     myLibrary.push(JSON.parse(localStorage.getItem(keys[i])));
   }
-  console.log(myLibrary);
+  myLibrary = myLibrary.sort((a, b) => a.key - b.key);
   showBook();
 }
 
