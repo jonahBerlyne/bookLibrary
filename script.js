@@ -24,26 +24,45 @@ let theIndex = null;
 let found = false;
 let bookAdded = false;
 
+function makeId() {
+  let result = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for (let i = 0; i < 10; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 function addBook() {
   const book = new Book (
     document.getElementById('title').value,
     document.getElementById('author').value,
     document.getElementById('pages').value
-    );
-    for (let i = 0; i < myLibrary.length; i++) {
-      if (myLibrary[i].title == book.title && myLibrary[i].author == book.author) {
-        found = true;
-        break;
-      }
+  );
+  for (let i = 0; i < myLibrary.length; i++) {
+    if (myLibrary[i].title == book.title && myLibrary[i].author == book.author) {
+      found = true;
+      break;
     }
-    if (found) {
-      found = false;
-      alert("Cannot add repeat books");
-      return;
+  }
+  if (found) {
+    found = false;
+    alert("Cannot add repeat books");
+    return;
+  }
+  myLibrary.push(book);
+  theIndex = makeId();
+  let idIsUnique = false;
+  while (!idIsUnique) {
+    let sameId = myLibrary.find(el => el.key == theIndex);
+    if (sameId !== theIndex) {
+      idIsUnique = true;
+      break;
     }
-    myLibrary.push(book);
-    theIndex = myLibrary.indexOf(book);
-    bookAdded = true;
+    theIndex = makeId();
+  }
+  bookAdded = true;
 }
   
 function showBook() {
@@ -85,6 +104,7 @@ function showBook() {
 function removeBook(e) {
   e.target.parentElement.remove();
   myLibrary.splice(e.target, 1);
+  localStorage.removeItem(e.target.parentElement.id);
 }
 
 function readIt(e) {
@@ -131,7 +151,22 @@ function restore() {
   for (let i = 0; i < keys.length; i++) {
     myLibrary.push(JSON.parse(localStorage.getItem(keys[i])));
   }
-  myLibrary = myLibrary.sort((a, b) => a.key - b.key);
+  myLibrary.sort((a, b) => {
+    if (a.title < b.title) { 
+      return -1; 
+    }
+    if (a.title > b.title) {
+      return 1;
+    }
+    if (a.title == b.title) {
+      if (a.author < b.author) {
+        return -1;
+      }
+      if (a.author > b.author) {
+        return 1;
+      }
+    }
+  });
   showBook();
 }
 
