@@ -107,11 +107,7 @@ function removeBook(e) {
   localStorage.removeItem(e.target.parentElement.id);
 }
 
-function readIt(e) {
-  if (e.target.textContent == "Not Read") {
-    e.target.textContent = "Read";
-  } else e.target.textContent = "Not Read";
-}
+const readIt = e => e.target.textContent == "Not Read" ? e.target.textContent = "Read" : e.target.textContent = "Not Read";
 
 function submitBook() {
   if (titleInput.value.length !== 0 && authorInput.value.length !== 0 && pagesInput.value >= 1) {
