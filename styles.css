@@ -1,25 +1,74 @@
-.button {
- cursor: pointer;
+body {
+ margin: 0;
+ background-color: wheat;
+ font-family: 'Edu NSW ACT Foundation', cursive;
 }
 
-#popUp {
+.top {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 25px;
+ margin-top: 10px;
+}
+
+.header {
+ font-size: 20px;
+}
+
+.button {
+ cursor: pointer;
+ font-family: 'Edu NSW ACT Foundation', cursive;
+ border: none;
+ font-size: 20px;
+ background-color: #d98d00;
+ border-radius: 16px;
+ padding: 7px 10px 7px 10px;
+}
+
+.popUp {
  display: none;
 }
 
+.popUp-container,
+.books {
+ display: flex;
+ align-items: start;
+ justify-content: center;
+ border: 1px solid rgb(234, 211, 170);
+ padding: 32.5px 25px 25px 25px;
+ box-shadow: 0px 5px 7px 0px rgba(0, 0, 0, 0.24);
+}
+
 .form {
- border: 1px solid black;
  padding: 5px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
 }
 
 .form-header {
- display: flex;
- align-items: center;
- justify-content: space-between;
+ font-size: 18px;
+}
+
+.form-label {
+ font-size: 20px;
+}
+
+.form-input {
+ width: 150px;
+ height: 0px;
+ border: none;
+ border-radius: 10px;
+ padding: 15px;
+ font-size: 18px;
+ font-family: 'Edu NSW ACT Foundation', cursive;
 }
 
 .close {
- display: flex; 
- justify-content: flex-end;
+ position: absolute;
+ right: 12px;
+ font-size: 30px;
 }
 
 .close:hover {
@@ -28,12 +77,46 @@
 }
 
 .books {
- border: 1px solid black;
- padding: 5px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+}
+
+.books > h3 {
+ font-size: 25px;
+ margin-bottom: 40px;
 }
 
 .book-list {
  display: flex;
  flex-wrap: wrap;
- gap: 5px;
+ gap: 55px;
+}
+
+.books-hide {
+ display: none;
+}
+
+.card {
+ border: 1px solid rgb(234, 211, 170);
+ padding: 12px 15px 25px 25px;
+ box-shadow: 0px 5px 7px 0px rgba(0, 0, 0, 0.24);
+}
+
+.card > div > h3 {
+ font-size: 20px;
+}
+
+.card-btns {
+ display: flex;
+ gap: 27px;
+ width: 150px;
+}
+
+@media screen and (max-width: 425px) {
+ .book-list {
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: center;
+ }
 }
